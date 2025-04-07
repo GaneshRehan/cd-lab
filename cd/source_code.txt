@@ -1,0 +1,133 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_IDENTIFIER_LENGTH 100
+#define MAX_BUFFER_SIZE 1024
+
+int isKeyword(const char *word) {
+    const char *keywords[] = {"int", "float", "double", "char", "if", "else", "while", "for", "return", "break", "continue"};
+    for (int i = 0; i < 11; i++) {
+        if (strcmp(word, keywords[i]) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void writeTokenToFile(const char *token, const char *tokenType) {
+    FILE *file = fopen(tokenType, "a");
+    if (file == NULL) {
+        printf("Error opening file for writing: %s\n", tokenType);
+        return;
+    }
+    fprintf(file, "%s\t", token);
+    fclose(file);
+}
+
+void handleIdentifierOrKeyword(char *word) {
+    if (isKeyword(word)) {
+        writeTokenToFile(word, "keywords.txt");
+    } else {
+        writeTokenToFile(word, "identifiers.txt");
+    }
+}
+
+// Function to handle numbers
+void handleNumber(char *word) {
+    writeTokenToFile(word, "numbers.txt");
+}
+
+void handleOperatorOrPunctuation(char ch) {
+    char op[2] = {ch, '\0'};
+    writeTokenToFile(op, "operators_and_punctuation.txt");
+}
+
+void skipComments(FILE *sourceFile) {
+    char ch;
+    while ((ch = fgetc(sourceFile)) != EOF) {
+        if (ch == '*' && (ch = fgetc(sourceFile)) == '/') {
+            return; 
+        }
+    }
+}
+
+void processSourceCode(FILE *sourceFile) {
+    char ch, word[MAX_IDENTIFIER_LENGTH];
+    int i = 0;
+
+    while ((ch = fgetc(sourceFile)) != EOF) {
+        if (isspace(ch)) {
+            continue;
+        }
+
+        if (ch == '/' && (ch = fgetc(sourceFile)) == '/') {
+            while ((ch = fgetc(sourceFile)) != '\n' && ch != EOF); // Skip the comment
+            continue;
+        }
+
+        if (ch == '/' && (ch = fgetc(sourceFile)) == '*') {
+            skipComments(sourceFile);
+            continue;
+        }
+
+        if (isalpha(ch) || ch == '_') {
+            word[i++] = ch;
+            while (isalnum((ch = fgetc(sourceFile))) || ch == '_') {
+                word[i++] = ch;
+            }
+            word[i] = '\0';
+            handleIdentifierOrKeyword(word);
+            ungetc(ch, sourceFile);
+            i = 0;
+        }
+        else if (isdigit(ch)) {
+            word[i++] = ch;
+            while (isdigit((ch = fgetc(sourceFile)))) {
+                word[i++] = ch;
+            }
+            word[i] = '\0';
+            handleNumber(word);
+            ungetc(ch, sourceFile);
+            i = 0;
+        }
+        else if (strchr("+-*/=<>!%&|^;,.(){}", ch)) {
+            handleOperatorOrPunctuation(ch);
+        }
+    }
+}
+
+int main() {
+    FILE *sourceFile = fopen("source_code.txt", "r");
+    if (sourceFile == NULL) {
+        printf("Error opening source code file.\n");
+        return 1;
+    }
+
+    fclose(fopen("keywords.txt", "w"));
+    fclose(fopen("identifiers.txt", "w"));
+    fclose(fopen("numbers.txt", "w"));
+    fclose(fopen("operators_and_punctuation.txt", "w"));
+
+    processSourceCode(sourceFile);
+
+    fclose(sourceFile);
+
+    printf("Lexical analysis completed. Tokens written to corresponding files.\n");
+
+    return 0;
+}
+
+online auction marketing system
+unmanned mars rover and terrain modeling system
+fast food billing system
+blood bank management system
+restraunt management system
+hotel management system
+momos home delivery system
+online bus ticket reservation system
+geomagnetic compass using magnetometer on android
+android application to locate and track mobile
+online training and placement system
+e ticket system

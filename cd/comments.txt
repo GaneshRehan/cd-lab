@@ -1,0 +1,22 @@
+// Function to check if a line contains a single-line comment
+    // Look for "//" in the line
+    const char *comment_start = strstr(line, "//");
+// Function to check if a line contains the start of a multi-line comment
+    // Look for "/*" in the line
+    // Look for "/*" in the line
+    const char *comment_start = strstr(line, "/*");
+    return (comment_start != NULL);
+}
+
+// Function to check if a line contains the end of a multi-line comment
+int is_multi_line_comment_end(const char *line) {
+    // Look for "*/" in the line
+// Function to extract comments from a file
+    int inside_multi_line_comment = 0; // Flag to track multi-line comments
+        // Remove trailing newline character
+            // Write the line if inside a multi-line comment
+            // Check if the multi-line comment ends in this line
+            // Check for single-line comments
+            // Check for the start of a multi-line comment
+                // Check if the multi-line comment ends in the same line
+    // Extract comments and write to output file
